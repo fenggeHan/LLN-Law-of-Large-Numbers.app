@@ -1,78 +1,58 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import streamlit as st
 
-# 设置matplotlib中文
-plt.rcParams["font.sans-serif"] = ["SimHei"]
-plt.rcParams["axes.unicode_minus"] = False
+st.set_page_config(page_title="大数定理交互演示", layout="wide")
 
+st.title("🎲 大数定理 (Law of Large Numbers) 动态模拟")
+st.write(
+    "大数定理表明：在随机事件的大量重复试验中，事件发生的频率会无限接近其理论概率。"
+)
 
-def bernoulli_simulation(max_n: int, p: float):
-    """伯努利大数定律模拟：抛硬币频率"""
-    samples = np.random.binomial(n=1, p=p, size=max_n)
-    freq_arr = np.cumsum(samples) / np.arange(1, max_n + 1)
-    return freq_arr
+# 侧边栏设置
+st.sidebar.header("实验参数设置")
+num_trials = st.sidebar.slider(
+    "模拟投掷次数 (N)", min_value=100, max_value=20000, value=5000, step=500
+)
+p_true = st.sidebar.slider(
+    "理论概率 (硬币正面朝上)",
+    min_value=0.1,
+    max_value=0.9,
+    value=0.5,
+    step=0.05,
+)
 
+# 模拟掷硬币 (1表示正面，0表示反面)
+np.random.seed(42)
+trials = np.random.binomial(1, p_true, num_trials)
+cumulative_means = np.cumsum(trials) / np.arange(1, num_trials + 1)
 
-def khintchine_simulation(max_n: int):
-    """辛钦大数定律模拟，U[0,10]，理论期望=5"""
-    samples = np.random.uniform(low=0, high=10, size=max_n)
-    mean_arr = np.cumsum(samples) / np.arange(1, max_n + 1)
-    true_mu = 5.0
-    return mean_arr, true_mu
+# 绘图
+fig, ax = plt.subplots(figsize=(10, 4))
+ax.plot(
+    range(1, num_trials + 1),
+    cumulative_means,
+    label="累计频率",
+    color="#1f77b4",
+    linewidth=1,
+)
+ax.axhline(
+    y=p_true,
+    color="r",
+    linestyle="--",
+    label=f"理论概率 ($p = {p_true}$)",
+)
+ax.set_xlabel("试验次数")
+ax.set_ylabel("正面出现的累计频率")
+ax.set_ylim(0, 1)
+ax.grid(True, linestyle=":", alpha=0.6)
+ax.legend()
 
+st.pyplot(fig)
 
-def main():
-    st.set_page_config(page_title="大数定律模拟", layout="wide")
-    st.title("📊 概率论 — 大数定理交互式模拟")
-    st.markdown("""
-    **大数定律核心：当样本量n足够大时，频率收敛于真实概率，样本均值收敛于总体期望。**
-    - 伯努利大数定律：频率依概率收敛事件真实概率
-    - 辛钦大数定律：样本均值依概率收敛总体数学期望
-    """)
-
-    # 侧边栏参数
-    with st.sidebar:
-        st.header("参数设置")
-        max_sample = st.slider("最大样本量 n", min_value=100, max_value=50000, value=20000, step=1000)
-        p_input = st.slider("伯努利试验真实概率 p", min_value=0.01, max_value=0.99, value=0.5, step=0.01)
-        run_btn = st.button("🔁 重新生成模拟数据", type="primary")
-
-    if run_btn or "first_run" not in st.session_state:
-        st.session_state["first_run"] = True
-        # 执行模拟
-        freq_data = bernoulli_simulation(max_sample, p_input)
-        mean_data, mu_true = khintchine_simulation(max_sample)
-
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9))
-        x_axis = np.arange(1, max_sample + 1)
-
-        # 图1 伯努利
-        ax1.plot(x_axis, freq_data, lw=0.6, color="#1f77b4")
-        ax1.axhline(y=p_input, color="red", linestyle="--", label=f"真实概率 p={p_input:.2f}")
-        ax1.set_title("伯努利大数定律｜事件发生频率随样本量变化")
-        ax1.set_xlabel("样本量 n")
-        ax1.set_ylabel("频率")
-        ax1.legend()
-        ax1.grid(alpha=0.3)
-
-        # 图2 辛钦
-        ax2.plot(x_axis, mean_data, lw=0.6, color="#2ca02c")
-        ax2.axhline(y=mu_true, color="red", linestyle="--", label=f"总体期望 μ={mu_true}")
-        ax2.set_title("辛钦大数定律｜样本均值随样本量变化")
-        ax2.set_xlabel("样本量 n")
-        ax2.set_ylabel("样本均值")
-        ax2.legend()
-        ax2.grid(alpha=0.3)
-
-        plt.tight_layout()
-        st.pyplot(fig)
-
-        st.markdown("### 📝观察结论")
-        st.write("1. 小样本时震荡剧烈，和真值偏差很大；")
-        st.write("2. 样本量不断增大，曲线逐步靠近红色虚线；")
-        st.write("3. 依概率收敛 ≠ 等于，仍会存在小幅随机波动。")
-
-
-if __name__ == "__main__":
-    main()
+# 指标展示
+final_rate = cumulative_means[-1]
+col1, col2, col3 = st.columns(3)
+col1.metric("总试验次数", f"{num_trials:,}")
+col2.metric("最终累计频率", f"{final_rate:.4f}")
+col3.metric("相对误差", f"{abs(final_rate - p_true):.4f}")

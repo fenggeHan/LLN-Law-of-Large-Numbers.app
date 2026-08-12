@@ -4,19 +4,18 @@ import matplotlib.pyplot as plt
 
 
 # ============================================================
-# 1. 页面配置
+# 1. 页面设置
 # ============================================================
 
 st.set_page_config(
     page_title="大数定律交互实验室",
     page_icon="🎲",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 
 # ============================================================
-# 2. 全局样式
+# 2. 页面 CSS
 # ============================================================
 
 st.markdown(
@@ -30,335 +29,348 @@ st.markdown(
     }
 
     .subtitle {
-        font-size: 20px;
+        font-size: 19px;
         color: #666666;
         margin-bottom: 25px;
     }
 
-    .experiment-card {
+    .experiment-box {
         padding: 20px;
         border-radius: 12px;
+        background-color: #f7f8fa;
         border: 1px solid #dddddd;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
-    .formula-box {
-        padding: 18px;
-        border-radius: 10px;
-        background-color: #f5f7fa;
-        margin: 15px 0;
+    .result-number {
+        font-size: 32px;
+        font-weight: bold;
     }
 
-    .footer {
-        text-align: center;
-        color: #888888;
+    .small-text {
+        color: #777777;
         font-size: 14px;
-        margin-top: 40px;
     }
 
     </style>
     """,
-    unsafe_allow_html=True,
+    unsafe_allow_html=True
 )
 
 
 # ============================================================
-# 3. 辅助函数
+# 3. 初始化随机实验状态
 # ============================================================
 
-def set_matplotlib_style():
-    """统一 Matplotlib 图像样式"""
-    plt.rcParams["font.family"] = "DejaVu Sans"
-    plt.rcParams["axes.unicode_minus"] = False
+if "experiment_data" not in st.session_state:
+    st.session_state.experiment_data = None
 
-
-set_matplotlib_style()
-
-
-def generate_bernoulli_data(p, n, seed):
-    """生成伯努利试验数据"""
-    rng = np.random.default_rng(seed)
-
-    trials = rng.binomial(
-        n=1,
-        p=p,
-        size=n
-    )
-
-    cumulative_frequency = np.cumsum(trials) / np.arange(1, n + 1)
-
-    return trials, cumulative_frequency
-
-
-def generate_sample_mean_data(distribution, n, seed):
-    """生成随机变量样本并计算累计样本均值"""
-
-    rng = np.random.default_rng(seed)
-
-    if distribution == "正态分布":
-        mu = 0
-        sigma = 1
-
-        samples = rng.normal(
-            loc=mu,
-            scale=sigma,
-            size=n
-        )
-
-        theoretical_mean = mu
-
-    elif distribution == "均匀分布":
-        a = 0
-        b = 1
-
-        samples = rng.uniform(
-            low=a,
-            high=b,
-            size=n
-        )
-
-        theoretical_mean = (a + b) / 2
-
-    elif distribution == "指数分布":
-        scale = 1
-
-        samples = rng.exponential(
-            scale=scale,
-            size=n
-        )
-
-        theoretical_mean = scale
-
-    elif distribution == "骰子":
-        samples = rng.integers(
-            low=1,
-            high=7,
-            size=n
-        )
-
-        theoretical_mean = 3.5
-
-    else:
-        samples = rng.normal(
-            0,
-            1,
-            n
-        )
-
-        theoretical_mean = 0
-
-    cumulative_mean = np.cumsum(samples) / np.arange(1, n + 1)
-
-    return samples, cumulative_mean, theoretical_mean
+if "experiment_name" not in st.session_state:
+    st.session_state.experiment_name = None
 
 
 # ============================================================
-# 4. 侧边栏导航
+# 4. 标题
 # ============================================================
 
-st.sidebar.title("🎲 大数定律实验室")
-
-st.sidebar.markdown(
-    """
-    **Law of Large Numbers**
-
-    通过计算机模拟随机实验，
-    直观理解概率论中的大数定律。
-    """
+st.markdown(
+    '<div class="main-title">🎲 大数定律交互实验室</div>',
+    unsafe_allow_html=True
 )
 
-page = st.sidebar.radio(
-    "请选择实验",
+st.markdown(
+    '<div class="subtitle">'
+    '选择一个你感兴趣的随机实验，自己调整参数，'
+    '观察随机性背后的规律。'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.divider()
+
+
+# ============================================================
+# 5. 选择实验
+# ============================================================
+
+experiment = st.selectbox(
+    "🔬 请选择一个实验",
     [
-        "🏠 首页",
-        "🪙 实验一：投掷硬币",
-        "🎲 实验二：样本均值",
-        "🔁 实验三：重复实验",
-        "📊 实验四：大数定律 vs 中心极限定理",
-        "📖 理论知识",
+        "🪙 抛硬币",
+        "🎲 掷骰子",
+        "🏀 篮球罚球",
+        "🎯 射击命中",
+        "🎁 抽奖箱",
+        "👥 随机抽样",
     ]
 )
 
-st.sidebar.divider()
-
-st.sidebar.caption(
-    "Python + NumPy + Matplotlib + Streamlit"
-)
-
 
 # ============================================================
-# 5. 首页
+# 6. 实验一：抛硬币
 # ============================================================
 
-if page == "🏠 首页":
+if experiment == "🪙 抛硬币":
 
-    st.markdown(
-        '<div class="main-title">🎲 大数定律交互实验室</div>',
-        unsafe_allow_html=True
-    )
+    st.subheader("🪙 抛硬币实验")
 
-    st.markdown(
-        '<div class="subtitle">通过计算机模拟，直观理解概率论中的“大数定律”</div>',
-        unsafe_allow_html=True
-    )
-
-    st.divider()
-
-    st.markdown(
+    st.write(
         """
-        ## 什么是大数定律？
+        一枚硬币正面朝上的概率可以自己设置。
 
-        大数定律是概率论中最重要的基本定理之一。
+        你的任务是观察：
 
-        它告诉我们：
-
-        > 当一个随机实验重复进行大量次数时，
-        > 随着试验次数不断增加，样本平均值会逐渐稳定并趋近于理论期望。
-
-        对于独立同分布的随机变量：
-
-        $$
-        X_1,X_2,\\dots,X_n
-        $$
-
-        如果它们具有相同的数学期望：
-
-        $$
-        E(X_i)=\\mu
-        $$
-
-        那么大数定律告诉我们：
-
-        $$
-        \\frac{X_1+X_2+\\cdots+X_n}{n}
-        \\rightarrow \\mu
-        $$
-
-        当：
-
-        $$
-        n\\rightarrow\\infty
-        $$
-
-        时，样本平均值会越来越接近理论平均值。
+        **当投掷次数越来越多时，正面出现的频率会发生什么变化？**
         """
     )
-
-    st.divider()
-
-    st.subheader("🧪 你可以进行哪些实验？")
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown(
-            """
-            ### 🪙 实验一
-
-            **投掷硬币**
-
-            观察正面出现的累计频率如何趋近理论概率。
-
-            $$
-            \\frac{S_n}{n}\\rightarrow p
-            $$
-            """
+        probability = st.slider(
+            "正面概率",
+            min_value=0.1,
+            max_value=0.9,
+            value=0.5,
+            step=0.05,
         )
 
     with col2:
-        st.markdown(
-            """
-            ### 🎲 实验二
-
-            **样本均值**
-
-            使用正态分布、均匀分布、
-            指数分布和骰子进行实验。
-
-            $$
-            \\bar X_n\\rightarrow E(X)
-            $$
-            """
+        trials = st.slider(
+            "投掷次数",
+            min_value=10,
+            max_value=50000,
+            value=1000,
+            step=10,
         )
 
     with col3:
-        st.markdown(
-            """
-            ### 🔁 实验三
-
-            **重复实验**
-
-            同时进行大量独立实验，
-            观察最终结果的分布。
-
-            体验“随机”背后的规律。
-            """
+        seed = st.number_input(
+            "随机种子",
+            min_value=0,
+            max_value=99999,
+            value=42,
         )
 
-    st.divider()
-
-    st.subheader("📊 一个重要的问题")
-
-    st.info(
-        """
-        如果一次投掷硬币的结果是随机的，
-
-        **为什么投掷次数越来越多以后，累计频率反而越来越稳定？**
-
-        你可以通过左侧的实验亲自寻找答案。
-        """
+    run = st.button(
+        "🎲 开始实验",
+        key="coin_run"
     )
+
+    if run:
+
+        rng = np.random.default_rng(seed)
+
+        data = rng.binomial(
+            1,
+            probability,
+            trials
+        )
+
+        cumulative = np.cumsum(data) / np.arange(
+            1,
+            trials + 1
+        )
+
+        st.session_state.experiment_data = (
+            data,
+            cumulative,
+            probability
+        )
+
+        st.session_state.experiment_name = experiment
 
 
 # ============================================================
-# 6. 实验一：投掷硬币
+# 7. 实验二：掷骰子
 # ============================================================
 
-elif page == "🪙 实验一：投掷硬币":
+elif experiment == "🎲 掷骰子":
 
-    st.title("🪙 实验一：投掷硬币")
+    st.subheader("🎲 掷骰子实验")
 
-    st.markdown(
+    st.write(
         """
-        我们首先研究最简单的伯努利试验。
+        我们不只观察骰子每个点数出现的频率，
+        还观察**平均点数**如何逐渐稳定。
 
-        假设一枚硬币正面朝上的理论概率为：
+        例如普通六面骰子的理论平均值为：
 
-        $$
-        P(X=1)=p
-        $$
-
-        我们不断投掷硬币，并计算：
-
-        $$
-        \\frac{\\text{正面出现次数}}{\\text{总投掷次数}}
-        $$
-
-        这就是**累计频率**。
+        **3.5**
         """
     )
 
-    st.divider()
-
-    # 参数
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        n_trials = st.slider(
-            "投掷次数 N",
-            100,
-            50000,
-            5000,
-            100
+        sides = st.selectbox(
+            "骰子面数",
+            [4, 6, 8, 10, 12, 20],
+            index=1,
         )
 
     with col2:
-        p = st.slider(
-            "理论概率 p",
+        trials = st.slider(
+            "投掷次数",
+            10,
+            50000,
+            1000,
+            10,
+        )
+
+    with col3:
+        seed = st.number_input(
+            "随机种子",
+            0,
+            99999,
+            42,
+        )
+
+    run = st.button(
+        "🎲 开始实验",
+        key="dice_run"
+    )
+
+    if run:
+
+        rng = np.random.default_rng(seed)
+
+        data = rng.integers(
+            1,
+            sides + 1,
+            trials
+        )
+
+        cumulative_mean = (
+            np.cumsum(data)
+            /
+            np.arange(1, trials + 1)
+        )
+
+        theoretical_mean = (
+            sides + 1
+        ) / 2
+
+        st.session_state.experiment_data = (
+            data,
+            cumulative_mean,
+            theoretical_mean
+        )
+
+        st.session_state.experiment_name = experiment
+
+
+# ============================================================
+# 8. 实验三：篮球罚球
+# ============================================================
+
+elif experiment == "🏀 篮球罚球":
+
+    st.subheader("🏀 篮球罚球命中率实验")
+
+    st.write(
+        """
+        假设一名球员有一个稳定的真实罚球命中率。
+
+        但是我们只能通过实际投篮来估计这个命中率。
+
+        **问题：投篮次数越多，我们得到的命中率会不会越稳定？**
+        """
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        probability = st.slider(
+            "真实命中率",
+            0.1,
+            0.95,
+            0.75,
+            0.05,
+        )
+
+    with col2:
+        trials = st.slider(
+            "投篮次数",
+            10,
+            50000,
+            1000,
+            10,
+        )
+
+    with col3:
+        seed = st.number_input(
+            "随机种子",
+            0,
+            99999,
+            42,
+        )
+
+    run = st.button(
+        "🏀 开始投篮",
+        key="basketball_run"
+    )
+
+    if run:
+
+        rng = np.random.default_rng(seed)
+
+        data = rng.binomial(
+            1,
+            probability,
+            trials
+        )
+
+        cumulative = np.cumsum(data) / np.arange(
+            1,
+            trials + 1
+        )
+
+        st.session_state.experiment_data = (
+            data,
+            cumulative,
+            probability
+        )
+
+        st.session_state.experiment_name = experiment
+
+
+# ============================================================
+# 9. 实验四：射击
+# ============================================================
+
+elif experiment == "🎯 射击命中":
+
+    st.subheader("🎯 射击命中率实验")
+
+    st.write(
+        """
+        假设射击者每次射击命中的概率相同。
+
+        通过大量射击，我们观察：
+
+        **实际命中率是否逐渐接近真实命中率？**
+        """
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        probability = st.slider(
+            "真实命中率",
             0.05,
             0.95,
-            0.50,
-            0.05
+            0.60,
+            0.05,
+        )
+
+    with col2:
+        trials = st.slider(
+            "射击次数",
+            10,
+            50000,
+            1000,
+            10,
         )
 
     with col3:
@@ -366,761 +378,642 @@ elif page == "🪙 实验一：投掷硬币":
             "随机种子",
             0,
             99999,
-            42
+            42,
         )
 
-    # 模拟
-    trials, cumulative_frequency = generate_bernoulli_data(
-        p,
-        n_trials,
-        seed
+    run = st.button(
+        "🎯 开始射击",
+        key="shoot_run"
     )
 
-    n = np.arange(1, n_trials + 1)
+    if run:
 
-    final_frequency = cumulative_frequency[-1]
-    final_error = final_frequency - p
+        rng = np.random.default_rng(seed)
 
-    # 指标
-    st.subheader("📊 实验结果")
+        data = rng.binomial(
+            1,
+            probability,
+            trials
+        )
 
-    c1, c2, c3, c4 = st.columns(4)
+        cumulative = np.cumsum(data) / np.arange(
+            1,
+            trials + 1
+        )
 
-    c1.metric(
-        "试验次数",
-        f"{n_trials:,}"
-    )
+        st.session_state.experiment_data = (
+            data,
+            cumulative,
+            probability
+        )
 
-    c2.metric(
-        "理论概率",
-        f"{p:.4f}"
-    )
-
-    c3.metric(
-        "最终累计频率",
-        f"{final_frequency:.4f}"
-    )
-
-    c4.metric(
-        "绝对误差",
-        f"{abs(final_error):.4f}"
-    )
-
-    st.divider()
-
-    # 图像
-    fig, ax = plt.subplots(figsize=(12, 5))
-
-    ax.plot(
-        n,
-        cumulative_frequency,
-        linewidth=1.5,
-        label="累计频率"
-    )
-
-    ax.axhline(
-        p,
-        linestyle="--",
-        linewidth=2,
-        label=f"理论概率 p = {p:.2f}"
-    )
-
-    ax.set_xlabel("试验次数 N")
-    ax.set_ylabel("累计频率")
-
-    ax.set_title(
-        "累计频率随着试验次数增加逐渐趋近理论概率"
-    )
-
-    ax.set_ylim(0, 1)
-
-    ax.grid(
-        True,
-        linestyle=":",
-        alpha=0.6
-    )
-
-    ax.legend()
-
-    st.pyplot(fig)
-
-    st.caption(
-        "注意：累计频率并不是单调地接近理论概率。"
-        "它仍然会产生波动，但总体上会越来越稳定。"
-    )
-
-    # 误差
-    st.subheader("📉 观察误差")
-
-    absolute_error = np.abs(
-        cumulative_frequency - p
-    )
-
-    fig2, ax2 = plt.subplots(figsize=(12, 4))
-
-    ax2.plot(
-        n,
-        absolute_error,
-        linewidth=1.2
-    )
-
-    ax2.set_xlabel("试验次数 N")
-    ax2.set_ylabel("|累计频率 − p|")
-
-    ax2.set_title(
-        "累计频率与理论概率之间的绝对误差"
-    )
-
-    ax2.grid(
-        True,
-        linestyle=":",
-        alpha=0.6
-    )
-
-    st.pyplot(fig2)
-
-    st.info(
-        """
-        **观察重点：**
-
-        不要期待误差每一步都下降。
-
-        大数定律描述的是一种“随着试验次数趋于无穷，
-        样本平均值趋近理论值”的长期规律，
-        而不是每一次实验结果都比上一次更准确。
-        """
-    )
+        st.session_state.experiment_name = experiment
 
 
 # ============================================================
-# 7. 实验二：样本均值
+# 10. 实验五：抽奖箱
 # ============================================================
 
-elif page == "🎲 实验二：样本均值":
+elif experiment == "🎁 抽奖箱":
 
-    st.title("🎲 实验二：观察样本均值")
+    st.subheader("🎁 抽奖箱实验")
 
-    st.markdown(
+    st.write(
         """
-        大数定律并不只适用于硬币。
+        一个抽奖箱中有三种奖品：
 
-        我们可以选择不同的随机变量，观察：
+        🥇 一等奖
 
-        $$
-        \\bar X_n=
-        \\frac{X_1+X_2+\\cdots+X_n}{n}
-        $$
+        🥈 二等奖
 
-        是否趋近于理论期望：
+        🥉 三等奖
 
-        $$
-        E(X)
-        $$
+        你可以自己设置一等奖和二等奖的概率，
+        剩余概率自动作为三等奖。
         """
     )
-
-    st.divider()
-
-    distribution = st.selectbox(
-        "选择随机变量",
-        [
-            "正态分布",
-            "均匀分布",
-            "指数分布",
-            "骰子"
-        ]
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        n = st.slider(
-            "样本数量 N",
-            100,
-            50000,
-            5000,
-            100
-        )
-
-    with col2:
-        seed = st.number_input(
-            "随机种子",
-            0,
-            99999,
-            42
-        )
-
-    samples, cumulative_mean, theoretical_mean = \
-        generate_sample_mean_data(
-            distribution,
-            n,
-            seed
-        )
-
-    final_mean = cumulative_mean[-1]
-    error = final_mean - theoretical_mean
-
-    st.subheader("📊 实验结果")
-
-    c1, c2, c3, c4 = st.columns(4)
-
-    c1.metric(
-        "样本数量",
-        f"{n:,}"
-    )
-
-    c2.metric(
-        "理论期望",
-        f"{theoretical_mean:.4f}"
-    )
-
-    c3.metric(
-        "最终样本均值",
-        f"{final_mean:.4f}"
-    )
-
-    c4.metric(
-        "绝对误差",
-        f"{abs(error):.4f}"
-    )
-
-    st.divider()
-
-    # 样本均值曲线
-    x = np.arange(1, n + 1)
-
-    fig, ax = plt.subplots(figsize=(12, 5))
-
-    ax.plot(
-        x,
-        cumulative_mean,
-        linewidth=1.5,
-        label="累计样本均值"
-    )
-
-    ax.axhline(
-        theoretical_mean,
-        linestyle="--",
-        linewidth=2,
-        label=f"理论期望 = {theoretical_mean:.2f}"
-    )
-
-    ax.set_xlabel("样本数量 N")
-    ax.set_ylabel("样本均值")
-
-    ax.set_title(
-        f"{distribution}：样本均值趋近理论期望"
-    )
-
-    ax.grid(
-        True,
-        linestyle=":",
-        alpha=0.6
-    )
-
-    ax.legend()
-
-    st.pyplot(fig)
-
-    # 分布直方图
-    st.subheader("📊 随机变量本身的分布")
-
-    fig2, ax2 = plt.subplots(figsize=(10, 4))
-
-    ax2.hist(
-        samples,
-        bins=40,
-        density=True,
-        alpha=0.7
-    )
-
-    ax2.set_xlabel("随机变量取值")
-    ax2.set_ylabel("频率密度")
-
-    ax2.set_title(
-        f"{distribution} 的模拟样本分布"
-    )
-
-    ax2.grid(
-        True,
-        linestyle=":",
-        alpha=0.5
-    )
-
-    st.pyplot(fig2)
-
-
-# ============================================================
-# 8. 实验三：重复实验
-# ============================================================
-
-elif page == "🔁 实验三：重复实验":
-
-    st.title("🔁 实验三：重复实验")
-
-    st.markdown(
-        """
-        前面的实验只进行了一次模拟。
-
-        现在我们换一个问题：
-
-        > 如果我们把“500 次投掷硬币”这个实验重复进行很多次，
-        > 每一次实验最终得到的累计频率会完全一样吗？
-
-        当然不会。
-
-        但这些结果会不会呈现出某种规律？
-
-        让我们一起看看。
-        """
-    )
-
-    st.divider()
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        experiment_count = st.slider(
-            "重复实验次数",
-            10,
-            1000,
-            200,
-            10
+        p_first = st.slider(
+            "一等奖概率",
+            0.05,
+            0.5,
+            0.10,
+            0.05,
         )
 
     with col2:
-        trials_per_experiment = st.slider(
-            "每次实验投掷次数",
-            50,
-            5000,
-            500,
-            50
+        p_second = st.slider(
+            "二等奖概率",
+            0.05,
+            0.5,
+            0.20,
+            0.05,
         )
 
     with col3:
-        p = st.slider(
-            "理论概率 p",
-            0.1,
-            0.9,
-            0.5,
-            0.05
+        trials = st.slider(
+            "抽奖次数",
+            10,
+            50000,
+            1000,
+            10,
         )
 
     seed = st.number_input(
         "随机种子",
         0,
         99999,
-        42
+        42,
     )
 
-    rng = np.random.default_rng(seed)
+    if p_first + p_second >= 1:
 
-    results = rng.binomial(
-        trials_per_experiment,
-        p,
-        size=experiment_count
-    ) / trials_per_experiment
+        st.error(
+            "一等奖和二等奖的概率之和必须小于 1。"
+        )
 
-    mean_result = np.mean(results)
-    std_result = np.std(results)
+    else:
 
-    st.subheader("📊 重复实验结果")
+        p_third = 1 - p_first - p_second
 
-    c1, c2, c3 = st.columns(3)
+        st.info(
+            f"""
+            当前概率：
 
-    c1.metric(
-        "重复次数",
-        f"{experiment_count:,}"
-    )
+            🥇 一等奖：{p_first:.0%}
 
-    c2.metric(
-        "结果平均值",
-        f"{mean_result:.4f}"
-    )
+            🥈 二等奖：{p_second:.0%}
 
-    c3.metric(
-        "结果标准差",
-        f"{std_result:.4f}"
-    )
-
-    st.divider()
-
-    # 结果分布
-    fig, ax = plt.subplots(figsize=(11, 5))
-
-    ax.hist(
-        results,
-        bins=30,
-        alpha=0.75
-    )
-
-    ax.axvline(
-        p,
-        linestyle="--",
-        linewidth=2,
-        label=f"理论概率 p = {p:.2f}"
-    )
-
-    ax.axvline(
-        mean_result,
-        linestyle=":",
-        linewidth=2,
-        label=f"实验平均值 = {mean_result:.4f}"
-    )
-
-    ax.set_xlabel("每次实验的最终累计频率")
-    ax.set_ylabel("实验次数")
-
-    ax.set_title(
-        "重复实验中最终累计频率的分布"
-    )
-
-    ax.grid(
-        True,
-        linestyle=":",
-        alpha=0.5
-    )
-
-    ax.legend()
-
-    st.pyplot(fig)
-
-    st.success(
-        f"""
-        虽然每一次实验得到的结果都不完全相同，
-        但是经过 {experiment_count:,} 次重复实验以后，
-
-        这些结果的平均值约为：
-
-        **{mean_result:.4f}**
-
-        理论概率为：
-
-        **{p:.4f}**
-
-        这说明随机性和规律性可以同时存在。
-        """
-    )
-
-
-# ============================================================
-# 9. 实验四：大数定律 vs 中心极限定理
-# ============================================================
-
-elif page == "📊 实验四：大数定律 vs 中心极限定理":
-
-    st.title("📊 实验四：大数定律 vs 中心极限定理")
-
-    st.markdown(
-        """
-        这是概率论中非常重要的两个定理。
-
-        它们经常被放在一起讨论，但研究的问题并不一样。
-        """
-    )
-
-    st.divider()
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        st.subheader("📘 大数定律")
-
-        st.markdown(
-            """
-            研究的是：
-
-            **样本均值最终会趋近哪里？**
-
-            $$
-            \\bar X_n\\rightarrow \\mu
-            $$
-
-            核心关键词：
-
-            **趋近理论期望**
+            🥉 三等奖：{p_third:.0%}
             """
         )
 
-    with col2:
-
-        st.subheader("📗 中心极限定理")
-
-        st.markdown(
-            """
-            研究的是：
-
-            **样本均值的随机波动呈现什么分布？**
-
-            当样本量足够大时：
-
-            $$
-            \\frac{\\bar X_n-\\mu}
-            {\\sigma/\\sqrt n}
-            \\approx N(0,1)
-            $$
-
-            核心关键词：
-
-            **正态分布**
-            """
+        run = st.button(
+            "🎁 开始抽奖",
+            key="lottery_run"
         )
 
-    st.divider()
+        if run:
 
-    st.subheader("🧪 模拟中心极限定理")
+            rng = np.random.default_rng(seed)
+
+            data = rng.choice(
+                [1, 2, 3],
+                size=trials,
+                p=[
+                    p_first,
+                    p_second,
+                    p_third
+                ]
+            )
+
+            first_frequency = (
+                np.cumsum(data == 1)
+                /
+                np.arange(1, trials + 1)
+            )
+
+            second_frequency = (
+                np.cumsum(data == 2)
+                /
+                np.arange(1, trials + 1)
+            )
+
+            third_frequency = (
+                np.cumsum(data == 3)
+                /
+                np.arange(1, trials + 1)
+            )
+
+            st.session_state.experiment_data = (
+                data,
+                first_frequency,
+                second_frequency,
+                third_frequency,
+                p_first,
+                p_second,
+                p_third
+            )
+
+            st.session_state.experiment_name = experiment
+
+
+# ============================================================
+# 11. 实验六：随机抽样
+# ============================================================
+
+elif experiment == "👥 随机抽样":
+
+    st.subheader("👥 随机抽样实验")
+
+    st.write(
+        """
+        假设一个总体中有一定比例的人支持某个观点。
+
+        我们无法调查所有人，
+        只能随机抽取一部分人进行调查。
+
+        **问题：样本越大，我们得到的结果是否越稳定？**
+        """
+    )
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        sample_size = st.slider(
-            "每组样本量 n",
-            2,
-            1000,
-            30
+        population_probability = st.slider(
+            "总体真实比例",
+            0.1,
+            0.9,
+            0.6,
+            0.05,
         )
 
     with col2:
-        repetitions = st.slider(
-            "重复次数",
-            100,
+        sample_size = st.slider(
+            "每次抽样人数",
+            10,
             5000,
-            1000,
-            100
+            100,
+            10,
         )
 
     with col3:
-        seed = st.number_input(
-            "随机种子",
-            0,
-            99999,
-            42
+        repetitions = st.slider(
+            "重复抽样次数",
+            10,
+            1000,
+            200,
+            10,
         )
 
-    rng = np.random.default_rng(seed)
-
-    # 使用均匀分布作为总体
-    samples = rng.uniform(
+    seed = st.number_input(
+        "随机种子",
         0,
-        1,
-        size=(repetitions, sample_size)
+        99999,
+        42,
     )
 
-    sample_means = np.mean(
-        samples,
-        axis=1
+    run = st.button(
+        "👥 开始抽样",
+        key="sample_run"
     )
 
-    mu = 0.5
-    sigma = np.sqrt(1 / 12)
+    if run:
 
-    standardized = (
-        sample_means - mu
-    ) / (
-        sigma / np.sqrt(sample_size)
-    )
+        rng = np.random.default_rng(seed)
 
-    st.write(
-        f"""
-        总体：
+        results = rng.binomial(
+            sample_size,
+            population_probability,
+            repetitions
+        ) / sample_size
 
-        **Uniform(0, 1)**
+        st.session_state.experiment_data = (
+            results,
+            population_probability
+        )
 
-        理论均值：
-
-        **μ = {mu}**
-
-        理论标准差：
-
-        **σ ≈ {sigma:.4f}**
-        """
-    )
-
-    fig, ax = plt.subplots(figsize=(11, 5))
-
-    ax.hist(
-        standardized,
-        bins=35,
-        density=True,
-        alpha=0.75
-    )
-
-    ax.set_xlabel("标准化样本均值")
-    ax.set_ylabel("密度")
-
-    ax.set_title(
-        "标准化样本均值的分布"
-    )
-
-    ax.grid(
-        True,
-        linestyle=":",
-        alpha=0.5
-    )
-
-    st.pyplot(fig)
-
-    st.info(
-        """
-        **你看到的是什么？**
-
-        随着每组样本量 n 增大，
-        标准化后的样本均值分布会越来越接近标准正态分布。
-
-        因此：
-
-        **大数定律：告诉我们样本均值“去哪里”。**
-
-        **中心极限定理：告诉我们样本均值“如何波动”。**
-        """
-    )
+        st.session_state.experiment_name = experiment
 
 
 # ============================================================
-# 10. 理论知识
+# 12. 显示实验结果
 # ============================================================
 
-elif page == "📖 理论知识":
-
-    st.title("📖 大数定律理论知识")
-
-    st.markdown(
-        """
-        ## 1. 伯努利大数定律
-
-        假设进行大量独立重复试验，每次试验成功的概率都是：
-
-        $$
-        p
-        $$
-
-        记：
-
-        $$
-        S_n=X_1+X_2+\\cdots+X_n
-        $$
-
-        那么成功的频率：
-
-        $$
-        \\frac{S_n}{n}
-        $$
-
-        会随着 n 的增加而趋近于：
-
-        $$
-        p
-        $$
-
-        即：
-
-        $$
-        \\frac{S_n}{n}\\rightarrow p
-        $$
-        """
-    )
+if (
+    st.session_state.experiment_data is not None
+    and
+    st.session_state.experiment_name == experiment
+):
 
     st.divider()
 
-    st.markdown(
-        """
-        ## 2. 弱大数定律
+    st.subheader("📊 实验结果")
 
-        设：
+    data = st.session_state.experiment_data
 
-        $$
-        X_1,X_2,\\dots,X_n
-        $$
 
-        相互独立同分布，并且：
+    # ========================================================
+    # 抛硬币 / 罚球 / 射击
+    # ========================================================
 
-        $$
-        E(X_i)=\\mu
-        $$
+    if experiment in [
+        "🪙 抛硬币",
+        "🏀 篮球罚球",
+        "🎯 射击命中"
+    ]:
 
-        那么样本均值：
+        raw_data, cumulative, theoretical = data
 
-        $$
-        \\bar X_n=
-        \\frac{1}{n}
-        \\sum_{i=1}^{n}X_i
-        $$
+        final_value = cumulative[-1]
 
-        满足：
+        col1, col2, col3 = st.columns(3)
 
-        $$
-        \\bar X_n
-        \\xrightarrow{P}
-        \\mu
-        $$
+        col1.metric(
+            "实验次数",
+            f"{len(raw_data):,}"
+        )
 
-        也就是说：
+        col2.metric(
+            "理论概率",
+            f"{theoretical:.4f}"
+        )
 
-        对任意：
+        col3.metric(
+            "最终实验频率",
+            f"{final_value:.4f}",
+            delta=f"{final_value - theoretical:+.4f}"
+        )
 
-        $$
-        \\varepsilon>0
-        $$
+        fig, ax = plt.subplots(
+            figsize=(12, 5)
+        )
 
-        有：
+        x = np.arange(
+            1,
+            len(raw_data) + 1
+        )
 
-        $$
-        P(|\\bar X_n-\\mu|>\\varepsilon)
-        \\rightarrow 0
-        $$
-        """
-    )
+        ax.plot(
+            x,
+            cumulative,
+            linewidth=1.5,
+            label="实验频率"
+        )
 
-    st.divider()
+        ax.axhline(
+            theoretical,
+            linestyle="--",
+            linewidth=2,
+            label=f"理论概率 = {theoretical:.2f}"
+        )
 
-    st.markdown(
-        """
-        ## 3. 为什么大数定律很重要？
+        ax.set_xlabel(
+            "实验次数"
+        )
 
-        大数定律建立了：
+        ax.set_ylabel(
+            "累计频率"
+        )
 
-        **概率理论 → 现实世界数据**
+        ax.set_ylim(
+            0,
+            1
+        )
 
-        之间的重要联系。
+        ax.set_title(
+            "实验频率随实验次数的变化"
+        )
 
-        例如：
+        ax.grid(
+            True,
+            linestyle=":",
+            alpha=0.5
+        )
 
-        - 抛硬币
-        - 赌博游戏
-        - 保险精算
-        - 民意调查
-        - 金融统计
-        - 实验科学
-        - 机器学习
+        ax.legend()
 
-        在这些问题中，我们往往无法直接知道总体规律，
-        但可以通过大量观测数据估计它。
-        """
-    )
+        st.pyplot(fig)
 
-    st.divider()
 
-    st.subheader("💡 最重要的一句话")
+    # ========================================================
+    # 掷骰子
+    # ========================================================
 
-    st.success(
-        """
-        **随机事件单次看起来没有规律，
-        但大量重复以后，整体会呈现稳定的统计规律。**
-        """
-    )
+    elif experiment == "🎲 掷骰子":
+
+        raw_data, cumulative_mean, theoretical_mean = data
+
+        final_mean = cumulative_mean[-1]
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "投掷次数",
+            f"{len(raw_data):,}"
+        )
+
+        col2.metric(
+            "理论平均值",
+            f"{theoretical_mean:.4f}"
+        )
+
+        col3.metric(
+            "最终样本平均值",
+            f"{final_mean:.4f}",
+            delta=f"{final_mean - theoretical_mean:+.4f}"
+        )
+
+        x = np.arange(
+            1,
+            len(raw_data) + 1
+        )
+
+        fig, ax = plt.subplots(
+            figsize=(12, 5)
+        )
+
+        ax.plot(
+            x,
+            cumulative_mean,
+            linewidth=1.5,
+            label="累计平均值"
+        )
+
+        ax.axhline(
+            theoretical_mean,
+            linestyle="--",
+            linewidth=2,
+            label=f"理论平均值 = {theoretical_mean:.2f}"
+        )
+
+        ax.set_xlabel(
+            "投掷次数"
+        )
+
+        ax.set_ylabel(
+            "平均点数"
+        )
+
+        ax.set_title(
+            "骰子平均点数的变化"
+        )
+
+        ax.grid(
+            True,
+            linestyle=":",
+            alpha=0.5
+        )
+
+        ax.legend()
+
+        st.pyplot(fig)
+
+        # 频数统计
+
+        st.subheader("🎲 各点数出现次数")
+
+        unique, counts = np.unique(
+            raw_data,
+            return_counts=True
+        )
+
+        fig2, ax2 = plt.subplots(
+            figsize=(10, 4)
+        )
+
+        ax2.bar(
+            unique,
+            counts
+        )
+
+        ax2.set_xlabel(
+            "点数"
+        )
+
+        ax2.set_ylabel(
+            "出现次数"
+        )
+
+        ax2.set_title(
+            "骰子各点数出现频数"
+        )
+
+        st.pyplot(fig2)
+
+
+    # ========================================================
+    # 抽奖箱
+    # ========================================================
+
+    elif experiment == "🎁 抽奖箱":
+
+        (
+            raw_data,
+            first_frequency,
+            second_frequency,
+            third_frequency,
+            p_first,
+            p_second,
+            p_third
+        ) = data
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "一等奖最终频率",
+            f"{first_frequency[-1]:.4f}",
+            delta=f"{first_frequency[-1] - p_first:+.4f}"
+        )
+
+        col2.metric(
+            "二等奖最终频率",
+            f"{second_frequency[-1]:.4f}",
+            delta=f"{second_frequency[-1] - p_second:+.4f}"
+        )
+
+        col3.metric(
+            "三等奖最终频率",
+            f"{third_frequency[-1]:.4f}",
+            delta=f"{third_frequency[-1] - p_third:+.4f}"
+        )
+
+        x = np.arange(
+            1,
+            len(raw_data) + 1
+        )
+
+        fig, ax = plt.subplots(
+            figsize=(12, 5)
+        )
+
+        ax.plot(
+            x,
+            first_frequency,
+            label="一等奖"
+        )
+
+        ax.plot(
+            x,
+            second_frequency,
+            label="二等奖"
+        )
+
+        ax.plot(
+            x,
+            third_frequency,
+            label="三等奖"
+        )
+
+        ax.axhline(
+            p_first,
+            linestyle="--"
+        )
+
+        ax.axhline(
+            p_second,
+            linestyle="--"
+        )
+
+        ax.axhline(
+            p_third,
+            linestyle="--"
+        )
+
+        ax.set_xlabel(
+            "抽奖次数"
+        )
+
+        ax.set_ylabel(
+            "累计频率"
+        )
+
+        ax.set_title(
+            "各奖项累计频率变化"
+        )
+
+        ax.grid(
+            True,
+            linestyle=":",
+            alpha=0.5
+        )
+
+        ax.legend()
+
+        st.pyplot(fig)
+
+
+    # ========================================================
+    # 随机抽样
+    # ========================================================
+
+    elif experiment == "👥 随机抽样":
+
+        results, true_probability = data
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "重复抽样次数",
+            f"{len(results):,}"
+        )
+
+        col2.metric(
+            "总体真实比例",
+            f"{true_probability:.4f}"
+        )
+
+        col3.metric(
+            "样本比例平均值",
+            f"{np.mean(results):.4f}"
+        )
+
+        # 分布
+
+        fig, ax = plt.subplots(
+            figsize=(11, 5)
+        )
+
+        ax.hist(
+            results,
+            bins=25,
+            alpha=0.75
+        )
+
+        ax.axvline(
+            true_probability,
+            linestyle="--",
+            linewidth=2,
+            label=f"总体真实比例 = {true_probability:.2f}"
+        )
+
+        ax.set_xlabel(
+            "样本比例"
+        )
+
+        ax.set_ylabel(
+            "出现次数"
+        )
+
+        ax.set_title(
+            "重复抽样得到的样本比例分布"
+        )
+
+        ax.grid(
+            True,
+            linestyle=":",
+            alpha=0.5
+        )
+
+        ax.legend()
+
+        st.pyplot(fig)
 
 
 # ============================================================
-# 11. 页脚
+# 13. 页面底部提示
 # ============================================================
 
-st.markdown(
+st.divider()
+
+st.info(
     """
-    <div class="footer">
-        🎲 大数定律交互实验室<br>
-        Python · NumPy · Matplotlib · Streamlit
-    </div>
-    """,
-    unsafe_allow_html=True
+    💡 **实验提示**
+
+    不要急着看理论结论。
+
+    你可以尝试：
+
+    **① 改变实验参数 → ② 重新实验 → ③ 比较结果 → ④ 思考你发现了什么。**
+
+    当你在不同实验中反复看到类似的现象时，
+    你就正在接近大数定律的核心思想。
+    """
+)
+
+st.caption(
+    "🎲 大数定律交互实验室 | Python + NumPy + Matplotlib + Streamlit"
 )

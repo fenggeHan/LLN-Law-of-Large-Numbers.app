@@ -248,7 +248,7 @@ st.markdown(
 
 st.markdown(
     '<div class="sub-title">'
-    '随着随机实验次数不断增加，实验结果通常会逐渐趋近于理论值。'
+    '动手实验 · 观察随机 · 发现规律'
     '</div>',
     unsafe_allow_html=True
 )

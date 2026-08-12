@@ -27,11 +27,6 @@ st.set_page_config(
 # ============================================================
 
 def setup_chinese_font():
-    """
-    统一配置 Matplotlib 中文字体。
-    优先使用项目 fonts/simhei.ttf。
-    如果不存在，则尝试下载。
-    """
 
     font_url = (
         "https://github.com/fenggeHan/"
@@ -141,92 +136,98 @@ setup_chinese_font()
 
 
 # ============================================================
-# 3. 自定义页面样式
+# 3. 页面样式
 # ============================================================
 
 st.markdown(
     """
     <style>
 
-    /* 页面顶部空间 */
     .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1.8rem;
+        padding-bottom: 1.5rem;
     }
 
-    /* 主标题 */
     .main-title {
         font-size: 32px;
         font-weight: 700;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
     }
 
     .sub-title {
-        font-size: 16px;
-        color: #666666;
-        margin-bottom: 25px;
+        font-size: 15px;
+        color: #777777;
+        margin-bottom: 18px;
     }
 
-    /* 实验标题 */
     .experiment-title {
         font-size: 22px;
         font-weight: 700;
         margin-top: 5px;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
     }
 
-    /* 小提示 */
     .experiment-desc {
         color: #666666;
         font-size: 14px;
         margin-bottom: 15px;
     }
 
-    /* 指标卡片 */
     .metric-box {
         border: 1px solid #E5E7EB;
         border-radius: 10px;
-        padding: 14px 16px;
+        padding: 13px 15px;
         background-color: rgba(248, 250, 252, 0.7);
-        min-height: 95px;
+        min-height: 92px;
     }
 
     .metric-label {
         font-size: 13px;
         color: #6B7280;
-        margin-bottom: 7px;
+        margin-bottom: 6px;
     }
 
     .metric-value {
-        font-size: 24px;
+        font-size: 23px;
         font-weight: 700;
     }
 
     .metric-note {
-        font-size: 12px;
+        font-size: 11px;
         color: #6B7280;
-        margin-top: 5px;
+        margin-top: 4px;
     }
 
-    /* 教学提示 */
-    .teaching-box {
-        padding: 16px;
-        border-radius: 10px;
-        background-color: #F5F9FF;
-        border-left: 4px solid #2E86AB;
-        margin-top: 12px;
-        margin-bottom: 15px;
-    }
-
-    /* 实验室标签 */
     .lab-tag {
         display: inline-block;
-        padding: 4px 10px;
-        border-radius: 15px;
+        padding: 3px 9px;
+        border-radius: 14px;
         background-color: #EEF5FF;
         color: #2563EB;
-        font-size: 13px;
-        margin-bottom: 8px;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    /* 底部实验指南：整体缩小 */
+    .guide-box {
+        font-size: 12px;
+        line-height: 1.65;
+        color: #666666;
+    }
+
+    .guide-box h4 {
+        font-size: 14px;
+        color: #444444;
+        margin-top: 8px;
+        margin-bottom: 5px;
+    }
+
+    .guide-box p {
+        margin: 2px 0;
+    }
+
+    .guide-box li {
+        margin-bottom: 2px;
     }
 
     </style>
@@ -246,19 +247,8 @@ st.markdown(
 
 st.markdown(
     '<div class="sub-title">'
-    '动手实验 · 观察随机 · 发现规律'
+    '动手实验 · 调整参数 · 观察规律'
     '</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    """
-    大数定律告诉我们：当随机实验被大量重复进行时，
-    <b>随机结果的长期平均表现会逐渐趋近于一个稳定的理论值。</b>
-    <br><br>
-    在这里，不需要先背公式。请选择一个实验、调整参数，
-    然后亲眼观察随机性如何逐渐呈现出稳定规律。
-    """,
     unsafe_allow_html=True
 )
 
@@ -326,7 +316,7 @@ experiment_description = {
 
 
 # ============================================================
-# 7. 侧边栏实验控制台
+# 7. 侧边栏
 # ============================================================
 
 st.sidebar.header("🔧 实验控制台")
@@ -346,17 +336,15 @@ st.sidebar.subheader("⚙️ 实验参数")
 
 
 # ============================================================
-# 8. 参数初始化
+# 8. 参数默认值
 # ============================================================
 
 p = 0.5
 n = 1000
-
 sides = 6
 
 p1 = 0.10
 p2 = 0.20
-p3 = 0.70
 
 population_p = 0.60
 sample_size = 50
@@ -367,7 +355,7 @@ mean_waiting = 10.0
 
 
 # ============================================================
-# 9. 不同实验参数
+# 9. 参数设置
 # ============================================================
 
 if experiment == "🪙 抛硬币":
@@ -465,7 +453,7 @@ elif experiment == "🎁 抽奖箱":
     p3 = 1 - p1 - p2
 
     st.sidebar.write(
-        f"🥉 三等奖概率：{p3:.1%}"
+        f"三等奖概率：{p3:.1%}"
     )
 
     if p3 < 0:
@@ -549,7 +537,7 @@ elif experiment == "🚕 随机等待时间":
 
 
 # ============================================================
-# 10. 按钮
+# 10. 操作按钮
 # ============================================================
 
 st.sidebar.markdown("---")
@@ -572,7 +560,7 @@ reset_button = st.sidebar.button(
 
 
 # ============================================================
-# 11. 生成实验数据函数
+# 11. 实验生成函数
 # ============================================================
 
 def generate_experiment(
@@ -596,10 +584,6 @@ def generate_experiment(
     )
 
 
-    # --------------------------------------------------------
-    # 抛硬币
-    # --------------------------------------------------------
-
     if experiment == "🪙 抛硬币":
 
         data = rng.binomial(
@@ -608,10 +592,7 @@ def generate_experiment(
             n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
         return {
             "kind": "mean_or_probability",
@@ -619,14 +600,9 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": p,
             "label": "累计正面频率",
-            "unit": "",
             "theory_name": "理论概率"
         }
 
-
-    # --------------------------------------------------------
-    # 掷骰子
-    # --------------------------------------------------------
 
     elif experiment == "🎲 掷骰子":
 
@@ -636,14 +612,9 @@ def generate_experiment(
             n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
-        theoretical = (
-            sides + 1
-        ) / 2
+        theoretical = (sides + 1) / 2
 
         return {
             "kind": "mean_or_probability",
@@ -651,14 +622,9 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": theoretical,
             "label": "累计平均点数",
-            "unit": "",
             "theory_name": "理论期望"
         }
 
-
-    # --------------------------------------------------------
-    # 篮球
-    # --------------------------------------------------------
 
     elif experiment == "🏀 篮球罚球":
 
@@ -668,10 +634,7 @@ def generate_experiment(
             n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
         return {
             "kind": "mean_or_probability",
@@ -679,14 +642,9 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": p,
             "label": "累计命中率",
-            "unit": "",
             "theory_name": "理论命中率"
         }
 
-
-    # --------------------------------------------------------
-    # 射击
-    # --------------------------------------------------------
 
     elif experiment == "🎯 射击命中":
 
@@ -696,10 +654,7 @@ def generate_experiment(
             n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
         return {
             "kind": "mean_or_probability",
@@ -707,21 +662,15 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": p,
             "label": "累计命中率",
-            "unit": "",
             "theory_name": "理论命中率"
         }
 
-
-    # --------------------------------------------------------
-    # 抽奖
-    # --------------------------------------------------------
 
     elif experiment == "🎁 抽奖箱":
 
         p3 = 1 - p1 - p2
 
         if p3 < 0:
-
             return None
 
         data = rng.choice(
@@ -730,20 +679,9 @@ def generate_experiment(
             p=[p1, p2, p3]
         )
 
-        f1 = (
-            np.cumsum(data == 1)
-            / x
-        )
-
-        f2 = (
-            np.cumsum(data == 2)
-            / x
-        )
-
-        f3 = (
-            np.cumsum(data == 3)
-            / x
-        )
+        f1 = np.cumsum(data == 1) / x
+        f2 = np.cumsum(data == 2) / x
+        f3 = np.cumsum(data == 3) / x
 
         return {
             "kind": "lottery",
@@ -757,10 +695,6 @@ def generate_experiment(
         }
 
 
-    # --------------------------------------------------------
-    # 随机抽样
-    # --------------------------------------------------------
-
     elif experiment == "👥 随机抽样":
 
         successes = rng.binomial(
@@ -769,28 +703,20 @@ def generate_experiment(
             n
         )
 
-        sample_ratios = (
-            successes
-            / sample_size
-        )
+        sample_ratios = successes / sample_size
 
-        cumulative = (
-            np.cumsum(sample_ratios)
-            / x
-        )
+        cumulative = np.cumsum(sample_ratios) / x
 
         return {
             "kind": "sampling",
             "data": sample_ratios,
             "cumulative": cumulative,
             "theoretical": population_p,
-            "sample_size": sample_size
+            "sample_size": sample_size,
+            "label": "累计样本比例",
+            "theory_name": "总体比例"
         }
 
-
-    # --------------------------------------------------------
-    # 产品质量
-    # --------------------------------------------------------
 
     elif experiment == "🏭 产品质量检测":
 
@@ -800,10 +726,7 @@ def generate_experiment(
             n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
         return {
             "kind": "mean_or_probability",
@@ -811,14 +734,9 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": defect_rate,
             "label": "累计次品率",
-            "unit": "",
             "theory_name": "理论次品率"
         }
 
-
-    # --------------------------------------------------------
-    # 等待时间
-    # --------------------------------------------------------
 
     elif experiment == "🚕 随机等待时间":
 
@@ -827,10 +745,7 @@ def generate_experiment(
             size=n
         )
 
-        cumulative = (
-            np.cumsum(data)
-            / x
-        )
+        cumulative = np.cumsum(data) / x
 
         return {
             "kind": "mean_or_probability",
@@ -838,16 +753,14 @@ def generate_experiment(
             "cumulative": cumulative,
             "theoretical": mean_waiting,
             "label": "累计平均等待时间",
-            "unit": "分钟",
             "theory_name": "理论平均等待时间"
         }
-
 
     return None
 
 
 # ============================================================
-# 12. 开始普通实验
+# 12. 开始实验
 # ============================================================
 
 if start_button:
@@ -871,13 +784,12 @@ if start_button:
 
         st.session_state.lln_experiment = experiment
 
-        final_value = (
-            result["cumulative"][-1]
-            if "cumulative" in result
-            else None
-        )
+        if result["kind"] in [
+            "mean_or_probability",
+            "sampling"
+        ]:
 
-        if final_value is not None:
+            final_value = result["cumulative"][-1]
 
             theoretical = result["theoretical"]
 
@@ -914,11 +826,15 @@ if reset_button:
 
 
 # ============================================================
-# 14. 主区域
+# 14. 获取当前结果
 # ============================================================
 
 result = st.session_state.lln_result
 
+
+# ============================================================
+# 15. 尚未开始实验
+# ============================================================
 
 if result is None:
 
@@ -936,7 +852,7 @@ if result is None:
 
     st.markdown(
         '<div class="experiment-desc">'
-        '左侧可以选择实验类型并自由调整参数。'
+        '左侧选择实验类型并调整实验参数。'
         '</div>',
         unsafe_allow_html=True
     )
@@ -947,12 +863,12 @@ if result is None:
 
         st.markdown(
             """
-            ### 🔍 你可以观察什么？
+            ### 🔍 观察重点
 
-            - 实验次数少的时候，结果是否很随机？
-            - 实验次数增加以后，结果是否逐渐稳定？
-            - 最终结果是否接近理论值？
-            - 误差是否总体变小？
+            - 随机结果的波动
+            - 累计结果的变化
+            - 实验值与理论值的差异
+            - 实验次数增加后的变化
             """
         )
 
@@ -960,25 +876,23 @@ if result is None:
 
         st.markdown(
             """
-            ### 💡 建议实验方法
+            ### 💡 推荐操作
 
-            **先小后大。**
+            先进行少量实验，
 
-            先把实验次数设置得比较小，
-            观察随机波动。
+            再逐渐增加实验次数，
 
-            然后逐渐增加实验次数，
-            看看规律是怎样出现的。
+            比较不同实验规模下的结果。
             """
         )
 
     st.info(
-        "👈 请从左侧选择一个实验，然后点击「▶ 开始实验」。"
+        "👈 请从左侧选择实验，然后点击「▶ 开始实验」。"
     )
 
 
 # ============================================================
-# 15. 普通实验结果
+# 16. 普通实验结果
 # ============================================================
 
 elif result["kind"] in [
@@ -1000,7 +914,7 @@ elif result["kind"] in [
 
 
     # --------------------------------------------------------
-    # 标题
+    # 实验标题
     # --------------------------------------------------------
 
     st.markdown(
@@ -1104,17 +1018,16 @@ elif result["kind"] in [
         )
 
 
-    st.markdown("")
-
-
-    # ========================================================
+    # --------------------------------------------------------
     # 收敛曲线
-    # ========================================================
+    # --------------------------------------------------------
 
-    st.subheader("📈 大数定律：结果如何逐渐稳定？")
+    st.subheader(
+        "📈 实验结果"
+    )
 
     fig, ax = plt.subplots(
-        figsize=(12, 5.5)
+        figsize=(12, 5.2)
     )
 
     x = np.arange(
@@ -1149,7 +1062,7 @@ elif result["kind"] in [
     )
 
     ax.set_title(
-        "随机结果的长期平均逐渐趋近理论值",
+        "累计结果变化曲线",
         fontsize=16,
         fontweight="bold"
     )
@@ -1172,18 +1085,20 @@ elif result["kind"] in [
     plt.close(fig)
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # 误差曲线
-    # ========================================================
+    # --------------------------------------------------------
 
-    st.subheader("📉 实验误差的变化")
+    st.subheader(
+        "📉 绝对误差变化"
+    )
 
     errors = np.abs(
         cumulative - theoretical
     )
 
     fig2, ax2 = plt.subplots(
-        figsize=(12, 4)
+        figsize=(12, 3.8)
     )
 
     ax2.plot(
@@ -1191,12 +1106,6 @@ elif result["kind"] in [
         errors,
         linewidth=1.5,
         color="#8E44AD"
-    )
-
-    ax2.axhline(
-        0,
-        color="#555555",
-        linewidth=1
     )
 
     ax2.set_xlabel(
@@ -1210,7 +1119,7 @@ elif result["kind"] in [
     )
 
     ax2.set_title(
-        "实验值与理论值之间的误差",
+        "实验值与理论值之间的绝对误差",
         fontsize=15,
         fontweight="bold"
     )
@@ -1229,11 +1138,13 @@ elif result["kind"] in [
     plt.close(fig2)
 
 
-    # ========================================================
+    # --------------------------------------------------------
     # 最近实验表现
-    # ========================================================
+    # --------------------------------------------------------
 
-    st.subheader("🔎 最近实验表现")
+    st.subheader(
+        "🔎 不同实验规模下的结果"
+    )
 
     recent_sizes = [
         10,
@@ -1248,71 +1159,34 @@ elif result["kind"] in [
         if size <= total_n
     ]
 
-    cols = st.columns(
-        len(recent_sizes)
-    )
+    if recent_sizes:
 
-    for col, size in zip(
-        cols,
-        recent_sizes
-    ):
-
-        value = cumulative[size - 1]
-
-        recent_error = abs(
-            value - theoretical
+        cols = st.columns(
+            len(recent_sizes)
         )
 
-        with col:
+        for col, size in zip(
+            cols,
+            recent_sizes
+        ):
 
-            st.metric(
-                f"N = {size}",
-                f"{value:.4f}",
-                f"误差 {recent_error:.4f}"
+            value = cumulative[size - 1]
+
+            recent_error = abs(
+                value - theoretical
             )
 
+            with col:
 
-    # ========================================================
-    # 教学解释
-    # ========================================================
-
-    st.markdown(
-        f"""
-        <div class="teaching-box">
-
-        <b>💡 实验观察</b>
-
-        <br><br>
-
-        当前实验进行了 <b>{total_n:,}</b> 次。
-
-        理论值为 <b>{theoretical:.4f}</b>，
-        最终实验值为 <b>{final_value:.4f}</b>。
-
-        当前绝对误差为 <b>{error:.4f}</b>。
-
-        <br><br>
-
-        请注意：误差曲线并不会严格地一直下降。
-
-        在随机实验中，误差仍然会不断上下波动，
-        但随着实验次数越来越大，
-        实验结果总体上会越来越接近理论值。
-
-        <br><br>
-
-        <b>
-        这就是我们通过实验观察到的大数定律。
-        </b>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+                st.metric(
+                    f"N = {size}",
+                    f"{value:.4f}",
+                    f"误差 {recent_error:.4f}"
+                )
 
 
 # ============================================================
-# 16. 抽奖实验
+# 17. 抽奖实验
 # ============================================================
 
 elif result["kind"] == "lottery":
@@ -1326,11 +1200,27 @@ elif result["kind"] == "lottery":
     total_n = len(data)
 
 
+    st.markdown(
+        '<div class="lab-tag">🧪 当前实验</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="experiment-title">🎁 抽奖箱</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="experiment-desc">'
+        '观察多个奖项的累计频率如何逐渐接近各自理论概率。'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+
     # --------------------------------------------------------
     # 指标
     # --------------------------------------------------------
-
-    st.subheader("🎁 抽奖实验结果")
 
     c1, c2, c3 = st.columns(3)
 
@@ -1360,11 +1250,11 @@ elif result["kind"] == "lottery":
 
 
     # --------------------------------------------------------
-    # 动态累计频率
+    # 图像
     # --------------------------------------------------------
 
     fig, ax = plt.subplots(
-        figsize=(12, 5.5)
+        figsize=(12, 5.2)
     )
 
     x = np.arange(
@@ -1420,7 +1310,7 @@ elif result["kind"] == "lottery":
     )
 
     ax.set_title(
-        "多个随机事件同时体现大数定律",
+        "多个随机事件的累计频率变化",
         fontsize=16,
         fontweight="bold"
     )
@@ -1441,30 +1331,8 @@ elif result["kind"] == "lottery":
     plt.close(fig)
 
 
-    # --------------------------------------------------------
-    # 教学解释
-    # --------------------------------------------------------
-
-    st.info(
-        """
-        💡 **观察重点**
-
-        抽奖次数较少时，每个奖项的实际频率都可能出现明显偏差。
-
-        随着抽奖次数不断增加，
-        一等奖、二等奖、三等奖的累计频率
-        会分别逐渐接近各自的理论概率。
-
-        注意：
-
-        **大数定律并不是只对某一个事件成立，
-        而可以同时体现在多个随机事件上。**
-        """
-    )
-
-
 # ============================================================
-# 17. 动态演示
+# 18. 动态演示
 # ============================================================
 
 if animation_button:
@@ -1473,10 +1341,8 @@ if animation_button:
 
     st.markdown("---")
 
-    st.subheader("🎬 动态实验演示")
-
-    st.write(
-        "观察实验结果如何随着实验次数增加而逐渐稳定。"
+    st.subheader(
+        "🎬 动态演示"
     )
 
     chart_placeholder = st.empty()
@@ -1485,16 +1351,12 @@ if animation_button:
 
     progress_placeholder = st.empty()
 
-    info_placeholder = st.empty()
 
-
-    # 动态演示最大次数
     animation_max = min(
         n,
         5000
     )
 
-    # 生成完整数据
     animation_result = generate_experiment(
         experiment,
         animation_max,
@@ -1508,9 +1370,9 @@ if animation_button:
         mean_waiting=mean_waiting
     )
 
+
     if animation_result is not None:
 
-        # 每一帧增加多少
         step = max(
             10,
             animation_max // 80
@@ -1525,28 +1387,25 @@ if animation_button:
             if not st.session_state.animation_running:
                 break
 
-            # ------------------------------------------------
-            # 普通实验动画
-            # ------------------------------------------------
 
             if animation_result["kind"] in [
                 "mean_or_probability",
                 "sampling"
             ]:
 
-                cumulative = animation_result[
-                    "cumulative"
-                ][:current_n]
+                cumulative = (
+                    animation_result["cumulative"]
+                    [:current_n]
+                )
 
-                theoretical = animation_result[
-                    "theoretical"
-                ]
+                theoretical = (
+                    animation_result["theoretical"]
+                )
 
                 current_value = cumulative[-1]
 
                 current_error = abs(
-                    current_value
-                    - theoretical
+                    current_value - theoretical
                 )
 
                 x = np.arange(
@@ -1555,7 +1414,7 @@ if animation_button:
                 )
 
                 fig, ax = plt.subplots(
-                    figsize=(12, 5.5)
+                    figsize=(12, 5.2)
                 )
 
                 ax.plot(
@@ -1588,7 +1447,7 @@ if animation_button:
                 )
 
                 ax.set_title(
-                    f"动态实验：N = {current_n:,}",
+                    f"实验次数 N = {current_n:,}",
                     fontsize=16,
                     fontweight="bold"
                 )
@@ -1611,10 +1470,6 @@ if animation_button:
                 plt.close(fig)
 
 
-                # --------------------------------------------
-                # 实时指标
-                # --------------------------------------------
-
                 with metric_placeholder.container():
 
                     c1, c2, c3, c4 = st.columns(4)
@@ -1635,14 +1490,10 @@ if animation_button:
                     )
 
                     c4.metric(
-                        "当前误差",
+                        "当前绝对误差",
                         f"{current_error:.4f}"
                     )
 
-
-                # --------------------------------------------
-                # 进度
-                # --------------------------------------------
 
                 progress_placeholder.progress(
                     current_n / animation_max,
@@ -1652,37 +1503,6 @@ if animation_button:
                         f"{animation_max:,}"
                     )
                 )
-
-
-                # --------------------------------------------
-                # 教学提示
-                # --------------------------------------------
-
-                if current_n < animation_max * 0.2:
-
-                    message = (
-                        "🔵 实验刚刚开始："
-                        "随机波动通常比较明显。"
-                    )
-
-                elif current_n < animation_max * 0.6:
-
-                    message = (
-                        "🟡 实验正在进行："
-                        "累计结果开始逐渐稳定。"
-                    )
-
-                else:
-
-                    message = (
-                        "🟢 实验次数已经较多："
-                        "观察累计结果是否逐渐接近理论值。"
-                    )
-
-                info_placeholder.info(
-                    message
-                )
-
 
                 time.sleep(
                     0.08
@@ -1698,7 +1518,7 @@ if animation_button:
 
 
 # ============================================================
-# 18. 停止动画
+# 19. 动画停止
 # ============================================================
 
 if st.session_state.animation_running:
@@ -1714,21 +1534,24 @@ if st.session_state.animation_running:
 
 
 # ============================================================
-# 19. 实验记录
+# 20. 实验记录
 # ============================================================
 
-if len(st.session_state.lln_history) > 0:
+if len(
+    st.session_state.lln_history
+) > 0:
 
     st.markdown("---")
 
-    st.subheader("📋 我的实验记录")
+    st.subheader(
+        "📋 我的实验记录"
+    )
 
-    history = st.session_state.lln_history
+    history = (
+        st.session_state.lln_history
+    )
 
-    for i, record in enumerate(
-        history[-10:],
-        start=1
-    ):
+    for record in history[-10:]:
 
         cols = st.columns(5)
 
@@ -1754,60 +1577,35 @@ if len(st.session_state.lln_history) > 0:
 
 
 # ============================================================
-# 20. 底部教学说明
+# 21. 底部实验指南
 # ============================================================
 
 st.markdown("---")
 
-st.subheader("📝 实验室使用指南")
-
 st.markdown(
     """
-    ### 第一步：选择一个随机实验
+    <div class="guide-box">
 
-    左侧下拉菜单提供 8 种不同的随机实验。
+    <h4>📝 实验室使用指南</h4>
 
-    ### 第二步：调整参数
+    <p><b>① 选择实验：</b>从左侧下拉菜单选择感兴趣的随机实验。</p>
 
-    尝试改变概率、骰子类型、样本大小、
-    实验次数等参数。
+    <p><b>② 调整参数：</b>根据实验类型调整相应参数。</p>
 
-    ### 第三步：先做小规模实验
+    <p><b>③ 开始实验：</b>点击「▶ 开始实验」查看实验结果。</p>
 
-    建议先从较小的实验次数开始，
-    观察随机结果的波动。
+    <p><b>④ 动态演示：</b>点击「🎬 动态演示」，观察实验结果随实验次数增加的变化。</p>
 
-    ### 第四步：逐渐增加实验次数
+    <p><b>⑤ 观察误差：</b>比较实验值与理论值之间的差异。</p>
 
-    点击「▶ 开始实验」或者「🎬 动态演示」，
-    观察实验结果是否越来越稳定。
+    <br>
 
-    ### 第五步：观察误差
+    <p>
+    <b>观察重点：</b>
+    随着实验次数不断增加，累计实验结果是否逐渐趋近于理论值？
+    </p>
 
-    不要只看最终结果。
-
-    请重点观察：
-
-    \[
-    |实验值 - 理论值|
-    \]
-
-    是否随着实验次数增加而总体趋近于 0。
-
-    ---
-
-    ### 💡 最重要的思考
-
-    **大数定律并不是说随机性消失了。**
-
-    每一次实验仍然具有随机性。
-
-    真正发生变化的是：
-
-    > 当实验次数越来越多时，
-    > 随机结果的长期平均表现越来越稳定，
-    > 并逐渐接近理论值。
-
-    **这就是你在这个实验室中需要亲眼发现的规律。**
-    """
+    </div>
+    """,
+    unsafe_allow_html=True
 )

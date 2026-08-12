@@ -15,7 +15,7 @@ import requests
 # ============================================================
 
 st.set_page_config(
-    page_title="大数定理交互式实验室",
+    page_title="大数定理（LLN）交互式实验室",
     page_icon="🎲",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -77,6 +77,7 @@ def setup_chinese_font():
                 font_path,
                 "wb"
             ) as f:
+
                 f.write(
                     response.content
                 )
@@ -241,13 +242,13 @@ st.markdown(
 # ============================================================
 
 st.markdown(
-    '<div class="main-title">🎲 大数定理交互式实验室</div>',
+    '<div class="main-title">🎲 大数定理（LLN）交互式实验室</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
     '<div class="sub-title">'
-    '动手实验 · 调整参数 · 观察规律'
+    '随着随机实验次数不断增加，实验结果通常会逐渐趋近于理论值。'
     '</div>',
     unsafe_allow_html=True
 )
@@ -1138,53 +1139,6 @@ elif result["kind"] in [
     plt.close(fig2)
 
 
-    # --------------------------------------------------------
-    # 最近实验表现
-    # --------------------------------------------------------
-
-    st.subheader(
-        "🔎 不同实验规模下的结果"
-    )
-
-    recent_sizes = [
-        10,
-        50,
-        100,
-        500
-    ]
-
-    recent_sizes = [
-        size
-        for size in recent_sizes
-        if size <= total_n
-    ]
-
-    if recent_sizes:
-
-        cols = st.columns(
-            len(recent_sizes)
-        )
-
-        for col, size in zip(
-            cols,
-            recent_sizes
-        ):
-
-            value = cumulative[size - 1]
-
-            recent_error = abs(
-                value - theoretical
-            )
-
-            with col:
-
-                st.metric(
-                    f"N = {size}",
-                    f"{value:.4f}",
-                    f"误差 {recent_error:.4f}"
-                )
-
-
 # ============================================================
 # 17. 抽奖实验
 # ============================================================
@@ -1194,7 +1148,9 @@ elif result["kind"] == "lottery":
     data = result["data"]
 
     f1 = result["f1"]
+
     f2 = result["f2"]
+
     f3 = result["f3"]
 
     total_n = len(data)

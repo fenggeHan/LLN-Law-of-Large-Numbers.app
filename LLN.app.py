@@ -605,26 +605,21 @@ def generate_experiment(
         }
 
 
-    elif experiment == "🎲 掷骰子":
+   elif experiment == "🎲 掷骰子":
 
-        data = rng.integers(
-            1,
-            sides + 1,
-            n
-        )
+    data = rng.integers(1, sides + 1, n)
+    counts_matrix = (data[:, None] == np.arange(1, sides + 1))
+    cumulative_frequencies = np.cumsum(counts_matrix, axis=0) / x[:, None]
+    theoretical = 1.0 / sides
 
-        cumulative = np.cumsum(data) / x
-
-        theoretical = (sides + 1) / 2
-
-        return {
-            "kind": "mean_or_probability",
-            "data": data,
-            "cumulative": cumulative,
-            "theoretical": theoretical,
-            "label": "累计平均点数",
-            "theory_name": "理论期望"
-        }
+    return {
+        "kind": "multi_event_probability",
+        "data": data,
+        "cumulative": cumulative_frequencies,
+        "theoretical": theoretical,
+        "label": "各点数累计出现频率",
+        "theory_name": "理论概率 (1/6)"
+    }
 
 
     elif experiment == "🏀 篮球罚球":

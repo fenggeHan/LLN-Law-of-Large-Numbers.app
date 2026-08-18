@@ -141,99 +141,99 @@ setup_chinese_font()
 # ============================================================
 
 st.markdown(
-    """
-    <style>
+"""
+<style>
 
-    .block-container {
-        padding-top: 1.8rem;
-        padding-bottom: 1.5rem;
-    }
+.block-container {
+    padding-top: 1.8rem;
+    padding-bottom: 1.5rem;
+}
 
-    .main-title {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
+.main-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
 
-    .sub-title {
-        font-size: 15px;
-        color: #777777;
-        margin-bottom: 18px;
-    }
+.sub-title {
+    font-size: 15px;
+    color: #777777;
+    margin-bottom: 18px;
+}
 
-    .experiment-title {
-        font-size: 22px;
-        font-weight: 700;
-        margin-top: 5px;
-        margin-bottom: 4px;
-    }
+.experiment-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 4px;
+}
 
-    .experiment-desc {
-        color: #666666;
-        font-size: 14px;
-        margin-bottom: 15px;
-    }
+.experiment-desc {
+    color: #666666;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
 
-    .metric-box {
-        border: 1px solid #E5E7EB;
-        border-radius: 10px;
-        padding: 13px 15px;
-        background-color: rgba(248, 250, 252, 0.7);
-        min-height: 92px;
-    }
+.metric-box {
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 13px 15px;
+    background-color: rgba(248, 250, 252, 0.7);
+    min-height: 92px;
+}
 
-    .metric-label {
-        font-size: 13px;
-        color: #6B7280;
-        margin-bottom: 6px;
-    }
+.metric-label {
+    font-size: 13px;
+    color: #6B7280;
+    margin-bottom: 6px;
+}
 
-    .metric-value {
-        font-size: 23px;
-        font-weight: 700;
-    }
+.metric-value {
+    font-size: 23px;
+    font-weight: 700;
+}
 
-    .metric-note {
-        font-size: 11px;
-        color: #6B7280;
-        margin-top: 4px;
-    }
+.metric-note {
+    font-size: 11px;
+    color: #6B7280;
+    margin-top: 4px;
+}
 
-    .lab-tag {
-        display: inline-block;
-        padding: 3px 9px;
-        border-radius: 14px;
-        background-color: #EEF5FF;
-        color: #2563EB;
-        font-size: 12px;
-        margin-bottom: 5px;
-    }
+.lab-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 14px;
+    background-color: #EEF5FF;
+    color: #2563EB;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
 
-    /* 底部实验指南：整体缩小 */
-    .guide-box {
-        font-size: 12px;
-        line-height: 1.65;
-        color: #666666;
-    }
+/* 底部实验指南：整体缩小 */
+.guide-box {
+    font-size: 12px;
+    line-height: 1.65;
+    color: #666666;
+}
 
-    .guide-box h4 {
-        font-size: 14px;
-        color: #444444;
-        margin-top: 8px;
-        margin-bottom: 5px;
-    }
+.guide-box h4 {
+    font-size: 14px;
+    color: #444444;
+    margin-top: 8px;
+    margin-bottom: 5px;
+}
 
-    .guide-box p {
-        margin: 2px 0;
-    }
+.guide-box p {
+    margin: 2px 0;
+}
 
-    .guide-box li {
-        margin-bottom: 2px;
-    }
+.guide-box li {
+    margin-bottom: 2px;
+}
 
-    </style>
-    """,
-    unsafe_allow_html=True
+</style>
+""",
+unsafe_allow_html=True
 )
 
 
@@ -286,14 +286,13 @@ experiment_list = [
     "🚕 随机等待时间"
 ]
 
-
 experiment_description = {
 
     "🪙 抛硬币":
         "大量抛掷硬币，观察正面累计频率逐渐接近理论概率。",
 
     "🎲 掷骰子":
-        "重复掷骰子，观察样本平均点数逐渐接近理论期望。",
+        "重复掷骰子，观察各点数累计出现频率逐渐接近理论概率。",
 
     "🏀 篮球罚球":
         "模拟大量罚球，观察累计命中率如何逐渐稳定。",
@@ -312,7 +311,6 @@ experiment_description = {
 
     "🚕 随机等待时间":
         "模拟随机等待时间，观察平均等待时间逐渐接近理论平均值。"
-
 }
 
 
@@ -377,7 +375,6 @@ if experiment == "🪙 抛硬币":
         10
     )
 
-
 elif experiment == "🎲 掷骰子":
 
     sides = st.sidebar.selectbox(
@@ -393,7 +390,6 @@ elif experiment == "🎲 掷骰子":
         1000,
         10
     )
-
 
 elif experiment == "🏀 篮球罚球":
 
@@ -413,7 +409,6 @@ elif experiment == "🏀 篮球罚球":
         10
     )
 
-
 elif experiment == "🎯 射击命中":
 
     p = st.sidebar.slider(
@@ -431,7 +426,6 @@ elif experiment == "🎯 射击命中":
         1000,
         10
     )
-
 
 elif experiment == "🎁 抽奖箱":
 
@@ -471,7 +465,6 @@ elif experiment == "🎁 抽奖箱":
         10
     )
 
-
 elif experiment == "👥 随机抽样":
 
     population_p = st.sidebar.slider(
@@ -498,7 +491,6 @@ elif experiment == "👥 随机抽样":
         10
     )
 
-
 elif experiment == "🏭 产品质量检测":
 
     defect_rate = st.sidebar.slider(
@@ -516,7 +508,6 @@ elif experiment == "🏭 产品质量检测":
         1000,
         10
     )
-
 
 elif experiment == "🚕 随机等待时间":
 
@@ -584,7 +575,6 @@ def generate_experiment(
         n + 1
     )
 
-
     if experiment == "🪙 抛硬币":
 
         data = rng.binomial(
@@ -604,12 +594,22 @@ def generate_experiment(
             "theory_name": "理论概率"
         }
 
-
     elif experiment == "🎲 掷骰子":
 
         data = rng.integers(1, sides + 1, n)
-        counts_matrix = (data[:, None] == np.arange(1, sides + 1))
-        cumulative_frequencies = np.cumsum(counts_matrix, axis=0) / x[:, None]
+
+        counts_matrix = (
+            data[:, None] ==
+            np.arange(1, sides + 1)
+        )
+
+        cumulative_frequencies = (
+            np.cumsum(
+                counts_matrix,
+                axis=0
+            ) / x[:, None]
+        )
+
         theoretical = 1.0 / sides
 
         return {
@@ -620,7 +620,6 @@ def generate_experiment(
             "label": "各点数累计出现频率",
             "theory_name": "理论概率 (1/6)"
         }
-
 
     elif experiment == "🏀 篮球罚球":
 
@@ -641,7 +640,6 @@ def generate_experiment(
             "theory_name": "理论命中率"
         }
 
-
     elif experiment == "🎯 射击命中":
 
         data = rng.binomial(
@@ -660,7 +658,6 @@ def generate_experiment(
             "label": "累计命中率",
             "theory_name": "理论命中率"
         }
-
 
     elif experiment == "🎁 抽奖箱":
 
@@ -690,7 +687,6 @@ def generate_experiment(
             "p3": p3
         }
 
-
     elif experiment == "👥 随机抽样":
 
         successes = rng.binomial(
@@ -713,7 +709,6 @@ def generate_experiment(
             "theory_name": "总体比例"
         }
 
-
     elif experiment == "🏭 产品质量检测":
 
         data = rng.binomial(
@@ -732,7 +727,6 @@ def generate_experiment(
             "label": "累计次品率",
             "theory_name": "理论次品率"
         }
-
 
     elif experiment == "🚕 随机等待时间":
 
@@ -1135,6 +1129,262 @@ elif result["kind"] in [
 
 
 # ============================================================
+# 16A. 掷骰子：多个随机事件类别
+# ============================================================
+
+elif result["kind"] == "multi_event_probability":
+
+    cumulative = result["cumulative"]
+
+    theoretical = result["theoretical"]
+
+    total_n = cumulative.shape[0]
+
+    sides_current = cumulative.shape[1]
+
+
+    # --------------------------------------------------------
+    # 实验标题
+    # --------------------------------------------------------
+
+    st.markdown(
+        '<div class="lab-tag">🧪 当前实验</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="experiment-title">🎲 掷骰子</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="experiment-desc">'
+        '重复掷骰子，观察各点数累计出现频率逐渐接近理论概率。'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+
+    # --------------------------------------------------------
+    # 核心指标
+    # --------------------------------------------------------
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-label">
+                    实验次数
+                </div>
+                <div class="metric-value">
+                    {total_n:,}
+                </div>
+                <div class="metric-note">
+                    当前模拟规模
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with c2:
+
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-label">
+                    理论概率
+                </div>
+                <div class="metric-value">
+                    {theoretical:.4f}
+                </div>
+                <div class="metric-note">
+                    每个点数的理论概率
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with c3:
+
+        final_frequencies = cumulative[-1]
+
+        max_error = np.max(
+            np.abs(
+                final_frequencies -
+                theoretical
+            )
+        )
+
+        st.markdown(
+            f"""
+            <div class="metric-box">
+                <div class="metric-label">
+                    最大绝对误差
+                </div>
+                <div class="metric-value">
+                    {max_error:.4f}
+                </div>
+                <div class="metric-note">
+                    1～{sides_current}点中的最大误差
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    # --------------------------------------------------------
+    # 六个点数的最终结果
+    # --------------------------------------------------------
+
+    cols = st.columns(sides_current)
+
+    for i in range(sides_current):
+
+        with cols[i]:
+
+            st.metric(
+                f"{i + 1} 点",
+                f"{final_frequencies[i]:.2%}",
+                f"理论 {theoretical:.2%}"
+            )
+
+
+    # --------------------------------------------------------
+    # 六条累计频率曲线
+    # --------------------------------------------------------
+
+    st.subheader(
+        "📈 各点数累计出现频率"
+    )
+
+    fig, ax = plt.subplots(
+        figsize=(12, 5.2)
+    )
+
+    x = np.arange(
+        1,
+        total_n + 1
+    )
+
+    for i in range(sides_current):
+
+        ax.plot(
+            x,
+            cumulative[:, i],
+            linewidth=1.8,
+            label=f"{i + 1} 点"
+        )
+
+    ax.axhline(
+        theoretical,
+        color="#E74C3C",
+        linestyle="--",
+        linewidth=2,
+        label=f"理论概率 = {theoretical:.4f}"
+    )
+
+    ax.set_xlabel(
+        "实验次数 N",
+        fontsize=12
+    )
+
+    ax.set_ylabel(
+        "累计出现频率",
+        fontsize=12
+    )
+
+    ax.set_title(
+        "各点数累计出现频率变化曲线",
+        fontsize=16,
+        fontweight="bold"
+    )
+
+    ax.grid(
+        alpha=0.3
+    )
+
+    ax.legend(
+        fontsize=10,
+        ncol=2
+    )
+
+    fig.tight_layout()
+
+    st.pyplot(
+        fig,
+        use_container_width=True
+    )
+
+    plt.close(fig)
+
+
+    # --------------------------------------------------------
+    # 各点数绝对误差曲线
+    # --------------------------------------------------------
+
+    st.subheader(
+        "📉 各点数绝对误差变化"
+    )
+
+    errors = np.abs(
+        cumulative - theoretical
+    )
+
+    fig2, ax2 = plt.subplots(
+        figsize=(12, 3.8)
+    )
+
+    for i in range(sides_current):
+
+        ax2.plot(
+            x,
+            errors[:, i],
+            linewidth=1.5,
+            label=f"{i + 1} 点"
+        )
+
+    ax2.set_xlabel(
+        "实验次数 N",
+        fontsize=12
+    )
+
+    ax2.set_ylabel(
+        "绝对误差",
+        fontsize=12
+    )
+
+    ax2.set_title(
+        "各点数实验频率与理论概率之间的绝对误差",
+        fontsize=15,
+        fontweight="bold"
+    )
+
+    ax2.grid(
+        alpha=0.3
+    )
+
+    ax2.legend(
+        fontsize=10,
+        ncol=2
+    )
+
+    fig2.tight_layout()
+
+    st.pyplot(
+        fig2,
+        use_container_width=True
+    )
+
+    plt.close(fig2)
+
+
+# ============================================================
 # 17. 抽奖实验
 # ============================================================
 
@@ -1460,12 +1710,129 @@ if animation_button:
                 )
 
 
-        st.session_state.animation_running = False
+            # ====================================================
+            # 掷骰子动态演示
+            # 仅新增这一实验类型的动态显示逻辑
+            # ====================================================
 
-        progress_placeholder.progress(
-            1.0,
-            text="🎉 动态实验完成"
-        )
+            elif animation_result["kind"] == "multi_event_probability":
+
+                cumulative = (
+                    animation_result["cumulative"]
+                    [:current_n]
+                )
+
+                theoretical = (
+                    animation_result["theoretical"]
+                )
+
+                sides_current = cumulative.shape[1]
+
+                current_values = cumulative[-1]
+
+                current_errors = np.abs(
+                    current_values - theoretical
+                )
+
+                x = np.arange(
+                    1,
+                    current_n + 1
+                )
+
+                fig, ax = plt.subplots(
+                    figsize=(12, 5.2)
+                )
+
+                for i in range(sides_current):
+
+                    ax.plot(
+                        x,
+                        cumulative[:, i],
+                        linewidth=2,
+                        label=f"{i + 1} 点"
+                    )
+
+                ax.axhline(
+                    theoretical,
+                    color="#E74C3C",
+                    linestyle="--",
+                    linewidth=2,
+                    label=f"理论概率 = {theoretical:.4f}"
+                )
+
+                ax.set_xlim(
+                    1,
+                    animation_max
+                )
+
+                ax.set_xlabel(
+                    "实验次数 N"
+                )
+
+                ax.set_ylabel(
+                    "累计出现频率"
+                )
+
+                ax.set_title(
+                    f"掷骰子：实验次数 N = {current_n:,}",
+                    fontsize=16,
+                    fontweight="bold"
+                )
+
+                ax.grid(
+                    alpha=0.3
+                )
+
+                ax.legend(
+                    fontsize=10,
+                    ncol=2
+                )
+
+                fig.tight_layout()
+
+                with chart_placeholder.container():
+
+                    st.pyplot(
+                        fig,
+                        use_container_width=True
+                    )
+
+                plt.close(fig)
+
+
+                with metric_placeholder.container():
+
+                    cols = st.columns(sides_current)
+
+                    for i in range(sides_current):
+
+                        cols[i].metric(
+                            f"{i + 1} 点",
+                            f"{current_values[i]:.2%}",
+                            f"误差 {current_errors[i]:.4f}"
+                        )
+
+
+                progress_placeholder.progress(
+                    current_n / animation_max,
+                    text=(
+                        f"实验进度："
+                        f"{current_n:,} / "
+                        f"{animation_max:,}"
+                    )
+                )
+
+                time.sleep(
+                    0.08
+                )
+
+
+    st.session_state.animation_running = False
+
+    progress_placeholder.progress(
+        1.0,
+        text="🎉 动态实验完成"
+    )
 
 
 # ============================================================
@@ -1534,29 +1901,29 @@ if len(
 st.markdown("---")
 
 st.markdown(
-    """
-    <div class="guide-box">
+"""
+<div class="guide-box">
 
-    <h4>📝 实验室使用指南</h4>
+<h4>📝 实验室使用指南</h4>
 
-    <p><b>① 选择实验：</b>从左侧下拉菜单选择感兴趣的随机实验。</p>
+<p><b>① 选择实验：</b>从左侧下拉菜单选择感兴趣的随机实验。</p>
 
-    <p><b>② 调整参数：</b>根据实验类型调整相应参数。</p>
+<p><b>② 调整参数：</b>根据实验类型调整相应参数。</p>
 
-    <p><b>③ 开始实验：</b>点击「▶ 开始实验」查看实验结果。</p>
+<p><b>③ 开始实验：</b>点击「▶ 开始实验」查看实验结果。</p>
 
-    <p><b>④ 动态演示：</b>点击「🎬 动态演示」，观察实验结果随实验次数增加的变化。</p>
+<p><b>④ 动态演示：</b>点击「🎬 动态演示」，观察实验结果随实验次数增加的变化。</p>
 
-    <p><b>⑤ 观察误差：</b>比较实验值与理论值之间的差异。</p>
+<p><b>⑤ 观察误差：</b>比较实验值与理论值之间的差异。</p>
 
-    <br>
+<br>
 
-    <p>
-    <b>观察重点：</b>
-    随着实验次数不断增加，累计实验结果是否逐渐趋近于理论值？
-    </p>
+<p>
+<b>观察重点：</b>
+随着实验次数不断增加，累计实验结果是否逐渐趋近于理论值？
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
+</div>
+""",
+unsafe_allow_html=True
 )
